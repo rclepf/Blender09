@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modelagem para Impressão 3D · UC Elementos Multimídia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #1b1b1e; --bg-raised: #232327; --bg-panel: #29292e; --line: #3a3a40;
+  --text: #ecebe7; --text-dim: #a3a2a8; --text-faint: #6b6a70;
+  --accent: #ef7d22; --accent-dim: #b45a17;
+  --axis-x: #e5484d; --axis-y: #4c9f4c; --axis-z: #3b82c4;
+  --radius: 6px;
+  --display: 'Space Grotesk', sans-serif; --body: 'Inter', sans-serif; --mono: 'JetBrains Mono', monospace;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;} }
+body{margin:0; background:var(--bg); color:var(--text); font-family:var(--body); line-height:1.6; font-size:16px;}
+a{color:var(--accent);}
+a:focus-visible, button:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+.grid-bg{position:fixed; inset:0; z-index:-1; background-image:linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size:64px 64px; opacity:0.18; mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);}
+.topbar{position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:0.9rem 1.75rem; background:rgba(27,27,30,0.88); backdrop-filter: blur(10px); border-bottom:1px solid var(--line); flex-wrap:wrap;}
+.topbar .brand{font-family:var(--display); font-weight:600; font-size:0.95rem; letter-spacing:0.01em; color:var(--text); display:flex; align-items:center; gap:0.6rem; text-decoration:none;}
+.topbar .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent); box-shadow:0 0 10px var(--accent); flex-shrink:0;}
+.topbar .eyebrow{color:var(--text-faint); font-size:0.78rem; font-family:var(--mono);}
+.topnav{display:flex; gap:1.35rem; flex-wrap:wrap;}
+.topnav a{color:var(--text-dim); text-decoration:none; font-size:0.85rem; font-family:var(--mono); transition:color 0.15s;}
+.topnav a:hover{color:var(--accent);}
+.wrap{max-width:920px; margin:0 auto; padding:0 1.75rem;}
+.hero{padding:5.5rem 0 4rem; position:relative;}
+.hero .kicker{font-family:var(--mono); color:var(--accent); font-size:0.85rem; letter-spacing:0.06em; text-transform:uppercase; display:flex; align-items:center; gap:0.6rem; margin-bottom:1.4rem;}
+.hero .kicker::before{content:""; width:28px; height:1px; background:var(--accent);}
+.hero h1{font-family:var(--display); font-size:clamp(2.1rem, 5vw, 3.4rem); line-height:1.08; font-weight:700; margin:0 0 1.3rem; max-width:17ch;}
+.hero h1 em{font-style:normal; color:var(--accent);}
+.hero p.lead{font-size:1.12rem; color:var(--text-dim); max-width:58ch; margin:0 0 2.2rem;}
+.hero-meta{display:flex; gap:2.2rem; flex-wrap:wrap; border-top:1px solid var(--line); padding-top:1.4rem; margin-top:1rem;}
+.hero-meta .item{font-size:0.82rem; color:var(--text-faint); font-family:var(--mono);}
+.hero-meta .item strong{display:block; color:var(--text); font-family:var(--body); font-size:0.95rem; font-weight:600; margin-top:0.15rem;}
+section{padding:4.2rem 0; border-top:1px solid var(--line);}
+.sec-head{display:flex; align-items:baseline; gap:1rem; margin-bottom:1.8rem; flex-wrap:wrap;}
+.sec-num{font-family:var(--mono); color:var(--accent); font-size:0.95rem; flex-shrink:0;}
+.sec-head h2{font-family:var(--display); font-size:1.7rem; margin:0; font-weight:600;}
+.sec-sub{color:var(--text-dim); font-size:0.9rem; margin:-1rem 0 1.8rem;}
+p{color:var(--text-dim);}
+.lead-in{color:var(--text); font-size:1.02rem;}
+.kbd{font-family:var(--mono); background:var(--bg-panel); border:1px solid var(--line); border-bottom-width:2px; color:var(--text); padding:0.12rem 0.5rem; border-radius:4px; font-size:0.82rem; white-space:nowrap;}
+.transform-table{width:100%; border-collapse:collapse; margin:1.5rem 0 2rem; font-size:0.9rem;}
+.transform-table th, .transform-table td{text-align:left; padding:0.7rem 0.9rem; border-bottom:1px solid var(--line);}
+.transform-table th{font-family:var(--mono); color:var(--text-faint); font-weight:500; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.04em;}
+.transform-table td{color:var(--text-dim);}
+.transform-table td:first-child{color:var(--text); font-weight:600;}
+.callout{background:var(--bg-raised); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:0 var(--radius) var(--radius) 0; padding:1.1rem 1.4rem; margin:1.6rem 0; font-size:0.92rem;}
+.callout strong{color:var(--accent); font-family:var(--mono); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:0.4rem;}
+.callout p{margin:0; color:var(--text);}
+.callout.warn{border-left-color:var(--axis-x);}
+.callout.warn strong{color:var(--axis-x);}
+.callout.good{border-left-color:var(--axis-y);}
+.callout.good strong{color:var(--axis-y);}
+.req-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; margin:1.6rem 0;}
+@media (max-width:640px){ .req-grid{grid-template-columns:1fr;} }
+.req-card{background:var(--bg-raised); border:1px solid var(--line); border-radius:var(--radius); padding:1.3rem 1.4rem;}
+.req-card h3{font-family:var(--display); font-size:1.05rem; margin:0 0 0.5rem;}
+.req-card p{margin:0; font-size:0.9rem;}
+.diagram-manifold{display:flex; justify-content:center; gap:2rem; margin:2rem 0; flex-wrap:wrap;}
+.diagram-manifold .item{text-align:center;}
+.diagram-manifold svg{width:110px; height:110px;}
+.diagram-manifold .cap{font-family:var(--mono); font-size:0.75rem; color:var(--text-faint); margin-top:0.5rem;}
+.steps{display:grid; gap:1rem; margin:1.8rem 0;}
+.step{display:grid; grid-template-columns:44px 1fr; gap:1.1rem; align-items:start; background:var(--bg-raised); border:1px solid var(--line); border-radius:var(--radius); padding:1.1rem 1.3rem;}
+.step-num{width:32px; height:32px; border-radius:50%; background:var(--bg-panel); border:1px solid var(--accent-dim); color:var(--accent); font-family:var(--mono); font-weight:700; font-size:0.9rem; display:flex; align-items:center; justify-content:center;}
+.step h4{margin:0 0 0.35rem; font-family:var(--body); font-weight:600; font-size:0.98rem; color:var(--text);}
+.step p{margin:0; font-size:0.9rem;}
+.step .why{margin-top:0.5rem; font-size:0.82rem; color:var(--text-faint); font-style:italic;}
+.trouble-grid{display:grid; gap:0.9rem; margin:1.6rem 0;}
+.trouble-item{display:grid; grid-template-columns:1fr 1fr; gap:1rem; background:var(--bg-raised); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;}
+@media (max-width:640px){ .trouble-item{grid-template-columns:1fr;} }
+.trouble-item .prob, .trouble-item .fix{padding:1rem 1.2rem;}
+.trouble-item .prob{border-right:1px solid var(--line); background:rgba(229,72,77,0.06);}
+@media (max-width:640px){ .trouble-item .prob{border-right:none; border-bottom:1px solid var(--line);} }
+.trouble-item .fix{background:rgba(76,159,76,0.06);}
+.trouble-item .tag{font-family:var(--mono); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:0.35rem;}
+.trouble-item .prob .tag{color:var(--axis-x);}
+.trouble-item .fix .tag{color:var(--axis-y);}
+.trouble-item p{margin:0; font-size:0.87rem; color:var(--text);}
+.roadmap{display:grid; gap:0.6rem; margin:1.8rem 0;}
+.rm-item{display:grid; grid-template-columns:44px 1fr auto; align-items:center; gap:1rem; padding:0.85rem 1.1rem; border:1px solid var(--line); border-radius:var(--radius); background:var(--bg-raised);}
+.rm-item.active{border-color:var(--accent); background:linear-gradient(90deg, rgba(239,125,34,0.1), transparent);}
+.rm-item.done{opacity:0.7;}
+.rm-num{font-family:var(--mono); color:var(--text-faint); font-size:0.95rem;}
+.rm-item.active .rm-num{color:var(--accent); font-weight:700;}
+.rm-title{font-weight:600; font-size:0.94rem;}
+.rm-item.active .rm-title{color:var(--text);}
+.rm-item:not(.active) .rm-title{color:var(--text-dim);}
+.rm-tag{font-family:var(--mono); font-size:0.7rem; color:var(--text-faint); border:1px solid var(--line); padding:0.2rem 0.55rem; border-radius:100px; white-space:nowrap;}
+.rm-item.active .rm-tag{color:var(--accent); border-color:var(--accent-dim);}
+.exercise{background:var(--bg-raised); border:1px solid var(--line); border-radius:var(--radius); padding:1.8rem 2rem; margin:1.8rem 0;}
+.exercise .ex-kicker{font-family:var(--mono); color:var(--accent); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.6rem;}
+.exercise h3{font-family:var(--display); margin:0 0 1rem; font-size:1.2rem;}
+.exercise ol{padding-left:1.3rem; margin:0; color:var(--text-dim);}
+.exercise li{margin-bottom:0.75rem; padding-left:0.2rem;}
+.exercise li::marker{font-family:var(--mono); color:var(--accent);}
+.final-checklist{display:grid; gap:0.6rem; margin:1.6rem 0;}
+.fc-row{display:grid; grid-template-columns:70px 1fr; gap:1rem; align-items:center; padding:0.75rem 1rem; background:var(--bg-raised); border:1px solid var(--line); border-radius:var(--radius);}
+.fc-row .fc-site{font-family:var(--mono); color:var(--accent); font-size:0.78rem; font-weight:700;}
+.fc-row p{margin:0; font-size:0.88rem; color:var(--text);}
+.foot-nav{padding:3.5rem 0 4rem; border-top:1px solid var(--line);}
+.foot-nav-inner{display:flex; justify-content:space-between; align-items:center; gap:1.5rem; flex-wrap:wrap;}
+.foot-prev, .foot-next{text-decoration:none; display:flex; flex-direction:column; gap:0.3rem;}
+.foot-next{align-items:flex-end;}
+.foot-prev .fn-label, .foot-next .fn-label{font-family:var(--mono); color:var(--text-faint); font-size:0.75rem; text-transform:uppercase;}
+.foot-prev .fn-title, .foot-next .fn-title{font-family:var(--display); color:var(--text); font-size:1.1rem; font-weight:600; display:flex; align-items:center; gap:0.5rem;}
+.foot-prev:hover .fn-title, .foot-next:hover .fn-title{color:var(--accent);}
+.foot-meta{text-align:center; color:var(--text-faint); font-size:0.78rem; margin-top:3rem; font-family:var(--mono);}
+</style>
+</head>
+<body>
+<div class="grid-bg" aria-hidden="true"></div>
+
+<header class="topbar">
+  <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span>Blender para Jogos <span class="eyebrow">· Site 9/9</span></a>
+  <nav class="topnav" aria-label="Navegação da página">
+    <a href="#requisitos">Requisitos de impressão</a>
+    <a href="#diagnostico">Diagnóstico</a>
+    <a href="#escala">Escala e suportes</a>
+    <a href="#guia">Guia: baú imprimível</a>
+    <a href="#fechamento">Fechamento da série</a>
+  </nav>
+</header>
+
+<main class="wrap" id="top">
+
+  <section class="hero" style="border-top:none; padding-top:4.5rem;">
+    <p class="kicker">Planejamento e Produção de Elementos Multimídia de Jogos Digitais</p>
+    <h1>Do arquivo digital ao <em>objeto físico</em>.</h1>
+    <p class="lead">Voltamos à comparação do Site 1: jogos, animação e impressão 3D exigem topologias diferentes. Até aqui, o baú foi otimizado para tempo real. Nesta etapa final, vamos preparar uma versão dele que existe fisicamente — inclusive como peça de verdade para o jogo de tabuleiro da turma.</p>
+    <div class="hero-meta">
+      <div class="item">Parte anterior<strong>Site 8 · Renderização 3D</strong></div>
+      <div class="item">Arquivo de partida<strong>bau_v06_rig.blend (cópia)</strong></div>
+      <div class="item">Você vai sair com<strong>bau_impressao.stl</strong></div>
+      <div class="item">Etapa final<strong>Série completa (9/9)</strong></div>
+    </div>
+  </section>
+
+  <section id="requisitos">
+    <div class="sec-head"><span class="sec-num">01</span><h2>O que muda quando o destino é uma impressora</h2></div>
+    <p class="lead-in">Relembrando a tabela do Site 1: um objeto para jogos precisa de poucos polígonos; um objeto para impressão precisa, acima de tudo, de uma coisa diferente — <strong style="color:var(--text)">existir fisicamente</strong>.</p>
+    <div class="req-grid">
+      <div class="req-card">
+        <h3>Malha manifold</h3>
+        <p>Toda aresta precisa conectar exatamente duas faces — sem buracos, sem faces internas soltas. Uma malha "não-manifold" não corresponde a nenhum objeto sólido possível.</p>
+      </div>
+      <div class="req-card">
+        <h3>Espessura mínima de parede</h3>
+        <p>Paredes finas demais (uma única face, sem espessura real) simplesmente não imprimem — o bico da impressora precisa de material para depositar.</p>
+      </div>
+      <div class="req-card">
+        <h3>Sem geometria solta</h3>
+        <p>Vértices ou faces soltos, não conectados ao corpo principal, confundem o fatiador (slicer) e geram erros de impressão.</p>
+      </div>
+      <div class="req-card">
+        <h3>Escala real</h3>
+        <p>O tamanho do objeto no Blender precisa corresponder a milímetros reais — algo que nunca importou nas etapas anteriores, feitas para uma engine.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="diagnostico">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Diagnosticando a malha: o 3D Print Toolbox</h2></div>
+    <p class="lead-in">O Blender inclui um addon nativo feito exatamente para essa checagem.</p>
+
+    <div class="diagram-manifold">
+      <div class="item">
+        <svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" fill="none" stroke="var(--axis-y)" stroke-width="3"/></svg>
+        <div class="cap">Manifold — fechado</div>
+      </div>
+      <div class="item">
+        <svg viewBox="0 0 100 100"><path d="M20 20 L80 20 L80 80 L20 80 Z M20 20 L20 50" fill="none" stroke="var(--axis-x)" stroke-width="3"/></svg>
+        <div class="cap">Não-manifold — aberto</div>
+      </div>
+    </div>
+
+    <table class="transform-table">
+      <thead><tr><th>Passo</th><th>Onde</th></tr></thead>
+      <tbody>
+        <tr><td>1. Ativar o addon</td><td>Edit → Preferences → Add-ons → busque "3D Print Toolbox" → marque a caixa</td></tr>
+        <tr><td>2. Abrir o painel</td><td>Painel N do viewport, em Edit Mode → aba "3D-Print"</td></tr>
+        <tr><td>3. Rodar o diagnóstico</td><td>Botão "Check All" — lista automaticamente problemas de non-manifold, espessura e interseções</td></tr>
+        <tr><td>4. Corrigir</td><td>Clique em cada item da lista para selecionar a geometria problemática diretamente na malha</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <strong>Faça isso numa cópia</strong>
+      <p>Duplique o arquivo antes de mexer (<span class="kbd">bau_v06_rig.blend</span> → <span class="kbd">bau_impressao_v01.blend</span>). As correções para impressão — preencher buracos, unir malhas — não são o que você quer no arquivo usado para o jogo.</p>
+    </div>
+  </section>
+
+  <section id="escala">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Escala real e suportes</h2></div>
+    <p class="lead-in">Duas últimas decisões antes de exportar: que tamanho físico o baú vai ter, e como ele vai se apoiar na mesa de impressão.</p>
+
+    <table class="transform-table">
+      <thead><tr><th>Ajuste</th><th>Como fazer</th></tr></thead>
+      <tbody>
+        <tr><td>Unidade em milímetros</td><td>Properties → Scene → Units → Unit Scale — ajuste para que 1 unidade do Blender corresponda a 1mm real</td></tr>
+        <tr><td>Redimensionar para o tamanho físico desejado</td><td>Selecione o objeto, <span class="kbd">S</span> e digite o fator de escala, ou ajuste diretamente no painel N em milímetros</td></tr>
+        <tr><td>Espessura mínima (Solidify)</td><td>Confira se todas as paredes (especialmente a tampa, que já usa Solidify desde o Site 2) têm ao menos 1.5-2mm de espessura real</td></tr>
+        <tr><td>Orientação para menos suportes</td><td>Gire o objeto para minimizar "beiradas soltas no ar" (overhangs) — a tampa entreaberta do Site 8, por exemplo, pode precisar ficar fechada para imprimir sem suporte</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout good">
+      <strong>Conectando com o jogo de tabuleiro</strong>
+      <p>Uma versão em miniatura do baú (2-3cm) imprime rápido e barato, e pode virar literalmente uma peça do jogo de tabuleiro que a turma está desenvolvendo — um "tesouro" físico, coerente com a mecânica que vocês já definiram na etapa de ludologia.</p>
+    </div>
+  </section>
+
+  <section id="guia">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Guia passo a passo — preparando o baú para impressão</h2></div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Duplique o arquivo e simplifique o rig</h4>
+          <p>A partir da cópia de <span class="kbd">bau_v06_rig.blend</span>, feche a tampa numa posição estável e aplique a pose atual como a forma final (não precisamos mais do armature para impressão).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Junte corpo e tampa num único objeto</h4>
+          <p>Selecione <span class="kbd">Bau_Corpo</span> e <span class="kbd">Bau_Tampa</span>, <span class="kbd">Ctrl+J</span> para unir — uma impressão física não precisa (nem deve) ter peças soltas flutuando sem conexão, a menos que você queira montar depois.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Rode o diagnóstico do 3D Print Toolbox</h4>
+          <p>Use "Check All" (seção 02) e corrija cada problema apontado — buracos costumam se resolver com Mesh → Clean Up → Fill Holes.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Ajuste escala para milímetros reais</h4>
+          <p>Defina o tamanho físico final (por exemplo, 3cm de largura para uma peça de tabuleiro) seguindo a seção 03.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Exporte como STL</h4>
+          <p>File → Export → STL. Diferente do FBX/glTF do Site 6, o STL carrega só a geometria — sem materiais, sem UV, sem rig — exatamente o que um fatiador de impressora espera.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div>
+          <h4>Confira num fatiador antes de imprimir</h4>
+          <p>Abra o .stl num software de fatiamento (o professor pode indicar qual está disponível no laboratório) e confira se ele reconhece o modelo como sólido, sem alertas de erro.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="problemas">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Problemas comuns e como resolver</h2></div>
+    <div class="trouble-grid">
+      <div class="trouble-item">
+        <div class="prob"><span class="tag">Problema</span><p>O 3D Print Toolbox acusa "non-manifold" mesmo após corrigir.</p></div>
+        <div class="fix"><span class="tag">Causa provável</span><p>Pode haver mais de um ponto com o problema. Rode "Check All" novamente após cada correção — raramente é só um.</p></div>
+      </div>
+      <div class="trouble-item">
+        <div class="prob"><span class="tag">Problema</span><p>O fatiador mostra a peça "flutuando" ou com partes separadas.</p></div>
+        <div class="fix"><span class="tag">Causa provável</span><p>Objetos não unidos com Ctrl+J, ou geometria solta não removida — confira com Mesh → Clean Up → Delete Loose antes de exportar.</p></div>
+      </div>
+      <div class="trouble-item">
+        <div class="prob"><span class="tag">Problema</span><p>Uma parede da tampa não aparece sólida no fatiador.</p></div>
+        <div class="fix"><span class="tag">Causa provável</span><p>Espessura do Solidify menor que a resolução da impressora (geralmente abaixo de 0.8-1mm). Aumente a espessura antes de exportar.</p></div>
+      </div>
+      <div class="trouble-item">
+        <div class="prob"><span class="tag">Problema</span><p>O fatiador pede muito material de suporte.</p></div>
+        <div class="fix"><span class="tag">Causa provável</span><p>Orientação com muitas superfícies penduradas no ar. Gire o objeto no fatiador (não precisa reabrir o Blender) até reduzir os overhangs.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="roteiro">
+    <div class="sec-head"><span class="sec-num">06</span><h2>A série completa</h2></div>
+    <div class="roadmap">
+      <div class="rm-item done"><span class="rm-num">01</span><span class="rm-title">Fundamentos do Blender</span><span class="rm-tag">concluído</span></div>
+      <div class="rm-item done"><span class="rm-num">02</span><span class="rm-title">Modelagem (Poly Modeling)</span><span class="rm-tag">concluído</span></div>
+      <div class="rm-item done"><span class="rm-num">03</span><span class="rm-title">UV Unwrapping</span><span class="rm-tag">concluído</span></div>
+      <div class="rm-item done"><span class="rm-num">04</span><span class="rm-title">Materiais e Shading (PBR)</span><span class="rm-tag">concluído</span></div>
+      <div class="rm-item done"><span class="rm-num">05</span><span class="rm-title">Otimização para game-ready assets</span><span class="rm-tag">concluído</span></div>
+      <div class="rm-item done"><span class="rm-num">06</span><span class="rm-title">Exportação e integração com engines</span><span class="rm-tag">concluído</span></div>
+      <div class="rm-item done"><span class="rm-num">07</span><span class="rm-title">Rigging e Animação básica</span><span class="rm-tag">concluído</span></div>
+      <div class="rm-item done"><span class="rm-num">08</span><span class="rm-title">Renderização 3D</span><span class="rm-tag">concluído</span></div>
+      <div class="rm-item active"><span class="rm-num">09</span><span class="rm-title">Modelagem para Impressão 3D</span><span class="rm-tag">você está aqui</span></div>
+    </div>
+  </section>
+
+  <section id="fechamento">
+    <div class="sec-head"><span class="sec-num">07</span><h2>Fechando a série: um objeto, quatro destinos</h2></div>
+    <p class="lead-in">O mesmo baú, modelado uma única vez, terminou em quatro formas diferentes:</p>
+    <div class="final-checklist">
+      <div class="fc-row"><span class="fc-site">Jogo</span><p>Malha otimizada, com UV e PBR, exportada em FBX/glTF (Sites 2–6)</p></div>
+      <div class="fc-row"><span class="fc-site">Animado</span><p>Com rig funcional e animação de abertura (Site 7)</p></div>
+      <div class="fc-row"><span class="fc-site">Divulgação</span><p>Uma imagem renderizada de alta qualidade (Site 8)</p></div>
+      <div class="fc-row"><span class="fc-site">Físico</span><p>Um arquivo pronto para sair de uma impressora 3D (Site 9)</p></div>
+    </div>
+    <div class="callout good">
+      <strong>O que isso ensina</strong>
+      <p>A mesma malha-base serviu a quatro destinos completamente diferentes, cada um com suas próprias exigências de topologia, escala e finalização — exatamente a lição do Site 1, agora vivida na prática, do início ao fim.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot-nav">
+  <div class="wrap foot-nav-inner">
+    <a class="foot-prev" href="../Blender08/index.html">
+      <span class="fn-label">← Anterior · Site 8 de 9</span>
+      <span class="fn-title">Renderização 3D</span>
+    </a>
+    <a class="foot-next" href="../Blender01/index.html">
+      <span class="fn-label">Rever a série</span>
+      <span class="fn-title">Voltar ao Site 1 →</span>
+    </a>
+  </div>
+  <p class="wrap foot-meta">Planejamento e Produção de Elementos Multimídia de Jogos Digitais · Blender para Jogos · Site 9: Modelagem para Impressão 3D — Série completa</p>
+</footer>
+
+</body>
+</html>
