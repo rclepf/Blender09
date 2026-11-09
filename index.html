@@ -115,6 +115,11 @@ p{color:var(--text-dim);}
 .foot-prev .fn-title, .foot-next .fn-title{font-family:var(--display); color:var(--text); font-size:1.1rem; font-weight:600; display:flex; align-items:center; gap:0.5rem;}
 .foot-prev:hover .fn-title, .foot-next:hover .fn-title{color:var(--accent);}
 .foot-meta{text-align:center; color:var(--text-faint); font-size:0.78rem; margin-top:3rem; font-family:var(--mono);}
+
+.ext{color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent-dim);}
+.ext:hover{color:var(--text);}
+.tbl{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+@media (max-width:640px){ .tbl .transform-table{min-width:600px;} }
 </style>
 </head>
 <body>
@@ -128,6 +133,8 @@ p{color:var(--text-dim);}
     <a href="#escala">Escala e suportes</a>
     <a href="#guia">Guia: baú imprimível</a>
     <a href="#fechamento">Fechamento da série</a>
+      <a href="#fdm">Aprofundando</a>
+    <a href="#recursos">Para aprofundar</a>
   </nav>
 </header>
 
@@ -170,7 +177,7 @@ p{color:var(--text-dim);}
 
   <section id="diagnostico">
     <div class="sec-head"><span class="sec-num">02</span><h2>Diagnosticando a malha: o 3D Print Toolbox</h2></div>
-    <p class="lead-in">O Blender inclui um addon nativo feito exatamente para essa checagem.</p>
+    <p class="lead-in">O 3D Print Toolbox é uma extensão oficial e gratuita do Blender, feita exatamente para essa checagem. Se ela ainda não estiver instalada, veja a seção 09 desta página.</p>
 
     <div class="diagram-manifold">
       <div class="item">
@@ -183,15 +190,15 @@ p{color:var(--text-dim);}
       </div>
     </div>
 
-    <table class="transform-table">
+    <div class="tbl"><table class="transform-table">
       <thead><tr><th>Passo</th><th>Onde</th></tr></thead>
       <tbody>
-        <tr><td>1. Ativar o addon</td><td>Edit → Preferences → Add-ons → busque "3D Print Toolbox" → marque a caixa</td></tr>
+        <tr><td>1. Instalar a extensão</td><td>Edit → Preferences → Get Extensions → busque "3D Print Toolbox" → Install (detalhes na seção 09)</td></tr>
         <tr><td>2. Abrir o painel</td><td>Painel N do viewport, em Edit Mode → aba "3D-Print"</td></tr>
         <tr><td>3. Rodar o diagnóstico</td><td>Botão "Check All" — lista automaticamente problemas de non-manifold, espessura e interseções</td></tr>
         <tr><td>4. Corrigir</td><td>Clique em cada item da lista para selecionar a geometria problemática diretamente na malha</td></tr>
       </tbody>
-    </table>
+    </table></div>
 
     <div class="callout warn">
       <strong>Faça isso numa cópia</strong>
@@ -203,7 +210,7 @@ p{color:var(--text-dim);}
     <div class="sec-head"><span class="sec-num">03</span><h2>Escala real e suportes</h2></div>
     <p class="lead-in">Duas últimas decisões antes de exportar: que tamanho físico o baú vai ter, e como ele vai se apoiar na mesa de impressão.</p>
 
-    <table class="transform-table">
+    <div class="tbl"><table class="transform-table">
       <thead><tr><th>Ajuste</th><th>Como fazer</th></tr></thead>
       <tbody>
         <tr><td>Unidade em milímetros</td><td>Properties → Scene → Units → Unit Scale — ajuste para que 1 unidade do Blender corresponda a 1mm real</td></tr>
@@ -211,7 +218,7 @@ p{color:var(--text-dim);}
         <tr><td>Espessura mínima (Solidify)</td><td>Confira se todas as paredes (especialmente a tampa, que já usa Solidify desde o Site 2) têm ao menos 1.5-2mm de espessura real</td></tr>
         <tr><td>Orientação para menos suportes</td><td>Gire o objeto para minimizar "beiradas soltas no ar" (overhangs) — a tampa entreaberta do Site 8, por exemplo, pode precisar ficar fechada para imprimir sem suporte</td></tr>
       </tbody>
-    </table>
+    </table></div>
 
     <div class="callout good">
       <strong>Conectando com o jogo de tabuleiro</strong>
@@ -289,8 +296,158 @@ p{color:var(--text-dim);}
     </div>
   </section>
 
-  <section id="roteiro">
-    <div class="sec-head"><span class="sec-num">06</span><h2>A série completa</h2></div>
+    <section id="fdm">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Aprofundando: como a impressora FDM "enxerga" o seu modelo</h2></div>
+    <p class="lead-in">Antes de decidir a espessura de uma parede ou o tamanho de um encaixe, é preciso entender o que a máquina faz. A maioria das impressoras de laboratório usa a tecnologia FDM: um bico aquecido deposita um fio de plástico, camada sobre camada.</p>
+    <div class="tbl"><table class="transform-table">
+      <thead><tr><th>Conceito</th><th>O que significa</th><th>Valor típico (bico de 0,4 mm)</th></tr></thead>
+      <tbody>
+        <tr><td>Largura de extrusão</td><td>A espessura do fio depositado. É a menor unidade horizontal que a máquina consegue fazer.</td><td>cerca de 0,45 mm</td></tr>
+        <tr><td>Perímetro</td><td>Uma volta de fio ao longo do contorno. Uma parede é composta de 1, 2, 3 ou mais perímetros.</td><td>2 perímetros ≈ 0,9 mm; 3 ≈ 1,35 mm; 4 ≈ 1,8 mm</td></tr>
+        <tr><td>Altura de camada</td><td>A espessura de cada camada. Camadas mais finas dão superfície mais lisa e impressão mais demorada.</td><td>0,2 mm (equilíbrio comum); 0,1 a 0,15 mm para detalhe</td></tr>
+        <tr><td>Preenchimento (infill)</td><td>O interior da peça não é maciço, e sim uma estrutura em grade ou favo. Percentual maior dá peça mais forte, mais pesada e mais lenta.</td><td>10% a 20% para a maioria das peças</td></tr>
+        <tr><td>Piso e teto</td><td>Camadas sólidas que fecham a peça por baixo e por cima.</td><td>3 a 5 camadas</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout warn">
+      <strong>Parede fina demais é parede que não existe</strong>
+      <p>A base de conhecimento da Prusa explica que paredes mais finas que um perímetro não são imprimíveis, e que paredes entre um e dois perímetros também dão problema. Em um bico de 0,4 mm, trate 0,9 mm como o mínimo real e prefira 1,2 mm ou mais para peças que serão manuseadas. Isso explica o aviso do Site 9: a tampa do baú com Solidify abaixo de 0,8 a 1 mm some no fatiador.</p>
+    </div>
+    <div class="callout">
+      <strong>Uma peça de 1 cm não é "uma peça pequena"</strong>
+      <p>A 0,2 mm por camada, uma miniatura de 2 cm de altura tem cerca de 100 camadas, e um detalhe de 0,3 mm de largura simplesmente não cabe no fio de 0,45 mm. Antes de esculpir um pormenor, pergunte: o fio consegue desenhar isso?</p>
+    </div>
+  </section>
+
+  <section id="tolerancia">
+    <div class="sec-head"><span class="sec-num">07</span><h2>Aprofundando: tolerâncias e encaixes</h2></div>
+    <p class="lead-in">Peças que se encaixam precisam de folga. Se duas superfícies têm exatamente a mesma medida no Blender, na impressão elas vão grudar, pois o plástico real nunca é perfeito.</p>
+    <p>A Prusa informa que suas impressoras têm precisão de pelo menos 0,2 mm e recomenda começar com 0,3 mm de folga em peças móveis, como dobradiças. Não existe valor universal: o resultado depende do tamanho da peça, da orientação, da calibração e do material. Por isso a prática profissional é imprimir um <strong style="color:var(--text)">teste de tolerância</strong> pequeno antes da peça final.</p>
+    <div class="tbl"><table class="transform-table">
+      <thead><tr><th>Tipo de encaixe</th><th>Folga de partida</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr><td>Peça que gira (dobradiça, eixo)</td><td>0,3 mm ou mais entre as superfícies</td><td>Menos que isso costuma "soldar" as peças durante a impressão.</td></tr>
+        <tr><td>Encaixe por pressão (pino em furo)</td><td>0,2 a 0,3 mm no diâmetro do furo</td><td>Teste dois ou três valores no mesmo arquivo.</td></tr>
+        <tr><td>Tampa que desliza</td><td>0,3 a 0,4 mm de cada lado</td><td>Uma tampa justa demais quebra ao abrir; folgada demais balança.</td></tr>
+        <tr><td>Peças coladas</td><td>0 a 0,1 mm</td><td>Pino de alinhamento ajuda a posicionar a colagem.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="mod-grid">
+      <div class="mod-card"><h3>Chanfro em vez de filete</h3><p>Um arredondamento (filete) voltado para a mesa cria um beiral inclinado que imprime mal. Um chanfro de 45° imprime bem e ainda facilita a entrada de peças que se encaixam.</p></div>
+      <div class="mod-card"><h3>Círculos são polígonos</h3><p>O sombreamento suave esconde as facetas no Blender, mas a impressora usa a malha real. Para furos e pinos, use pelo menos 32 segmentos, e confira o número de lados no Add Cylinder (Vertices).</p></div>
+      <div class="mod-card"><h3>Furos saem menores</h3><p>O fio de plástico tende a "fechar" furos pequenos. Em um furo de 5 mm, é comum medir 4,7 mm. Compense aumentando o furo no modelo ou use o teste de tolerância para achar o valor.</p></div>
+      <div class="mod-card"><h3>Guarde uma versão</h3><p>Antes de subtrair um furo ou um encaixe com Boolean, salve uma cópia do arquivo. Se a folga errar, você ajusta o valor e refaz sem refazer a modelagem.</p></div>
+    </div>
+    <div class="exercise">
+      <div class="ex-kicker">Laboratório 4</div>
+      <h3>Teste de tolerância no Blender</h3>
+      <ol>
+        <li>Modele uma placa 40×15×3 mm com quatro furos de 5 mm de diâmetro e quatro pinos cilíndricos soltos de 4,6 / 4,7 / 4,8 / 4,9 mm, todos com 32 segmentos.</li>
+        <li>Antes de imprimir, preveja: qual par pino-furo (folga de 0,4 / 0,3 / 0,2 / 0,1 mm) deve encaixar e qual vai prender? Registre sua hipótese.</li>
+        <li>Exporte em STL, imprima e compare com a hipótese. O valor que encaixa com leve pressão é a <strong style="color:var(--text)">sua folga de partida</strong> para os encaixes da turma.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="orientacao">
+    <div class="sec-head"><span class="sec-num">08</span><h2>Aprofundando: orientação, suportes e divisão da peça</h2></div>
+    <p class="lead-in">A mesma peça pode imprimir em 40 minutos ou em 3 horas, dependendo só de como está virada na mesa.</p>
+    <div class="tbl"><table class="transform-table">
+      <thead><tr><th>Problema</th><th>Regra prática</th><th>Como resolver</th></tr></thead>
+      <tbody>
+        <tr><td>Partes suspensas (overhang)</td><td>Até cerca de 45° a 60° a impressora desenha sem suporte. Mais inclinado que isso, precisa de suporte.</td><td>Gire a peça para reduzir os overhangs ou acrescente um chanfro de 45° no modelo.</td></tr>
+        <tr><td>Pontes (bridging)</td><td>Trechos horizontais curtos, entre dois apoios, costumam imprimir bem sem suporte. Os longos afrouxam.</td><td>Mantenha vãos curtos ou divida a peça.</td></tr>
+        <tr><td>Resistência</td><td>A peça é mais forte ao longo das camadas e mais fraca entre elas. Uma peça que será puxada ou dobrada não deve ter a camada ao longo da direção do esforço.</td><td>Oriente a peça de modo que a carga corte as camadas no sentido de menor risco.</td></tr>
+        <tr><td>Acabamento</td><td>A face que apoia na mesa fica lisa. A que apoia em suporte fica áspera.</td><td>Coloque a face de melhor aparência na mesa ou virada para cima.</td></tr>
+        <tr><td>Peça complexa</td><td>Dividir diminui suportes e melhora a orientação de cada parte.</td><td>Corte no Blender com o Bisect ou o Boolean, e acrescente pinos de alinhamento para colar.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout good">
+      <strong>Veja os problemas antes de fatiar</strong>
+      <p>O Blender tem uma ferramenta embutida: no Edit Mode, abra o menu <em>Overlays → Mesh Edit Mode → Mesh Analysis</em> e escolha <em>Overhang</em> para pintar de vermelho as faces que precisam de suporte, ou <em>Thickness</em> para achar as paredes finas. Ajuste o ângulo (Overhang) e a espessura mínima (Thickness) direto nas opções do overlay.</p>
+    </div>
+    <div class="exercise">
+      <div class="ex-kicker">Laboratório 5</div>
+      <h3>Qual lado fica para baixo?</h3>
+      <ol>
+        <li>Abra o baú em Edit Mode e ligue o Mesh Analysis em <em>Overhang</em>. Gire o objeto 90° em cada eixo e observe quanto vermelho aparece.</li>
+        <li>Escolha a orientação com menos vermelho, mas que mantenha a face mais bonita visível. Anote a decisão e a justificativa.</li>
+        <li>Importe o STL no fatiador nas duas orientações (a melhor e uma ruim) e compare o tempo estimado e o consumo de material.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="toolbox">
+    <div class="sec-head"><span class="sec-num">09</span><h2>Aprofundando: o 3D Print Toolbox como extensão</h2></div>
+    <p class="lead-in">Atenção a uma atualização: nas versões atuais do Blender, o 3D Print Toolbox é uma <strong style="color:var(--text)">extensão</strong> oficial e gratuita, instalada pela plataforma de extensões, e não um add-on que já vem ativado.</p>
+    <div class="tbl"><table class="transform-table">
+      <thead><tr><th>Passo</th><th>Onde</th></tr></thead>
+      <tbody>
+        <tr><td>1. Abrir as extensões</td><td>Edit → Preferences → <em>Get Extensions</em> (ou Extensions) e aceite a conexão com a internet, se pedir.</td></tr>
+        <tr><td>2. Instalar</td><td>Busque <em>3D Print Toolbox</em> (autor Mikhail Rachinskiy) e clique em Install. Requer Blender 4.2 LTS ou mais novo.</td></tr>
+        <tr><td>3. Sem internet no laboratório?</td><td>Baixe o arquivo .zip da extensão em casa e use <em>Install from Disk</em> em Edit → Preferences → Get Extensions.</td></tr>
+        <tr><td>4. Achar o painel</td><td>Painel lateral (tecla <span class="kbd">N</span>) do viewport, aba <em>3D-Print</em>.</td></tr>
+      </tbody>
+    </table></div>
+    <p>As versões recentes da extensão oferecem, entre outras ferramentas (a lista varia com a versão):</p>
+    <div class="mod-grid">
+      <div class="mod-card"><h3>Análise</h3><p>Verificações de malha (partes soltas, faces degeneradas, geometria não plana, interseções, espessura e overhang), mais um relatório com <strong style="color:var(--text)">volume e área</strong> da peça. O volume ajuda a estimar a quantidade de material.</p></div>
+      <div class="mod-card"><h3>Correção</h3><p><em>Make Manifold</em> para tentar fechar a malha, e <em>Scale to Volume</em> ou <em>Scale to Bounds</em> para dimensionar a peça em milímetros, sem fazer conta de cabeça.</p></div>
+      <div class="mod-card"><h3>Peças ocas e cortes</h3><p><em>Hollow</em> esvazia a peça com paredes de espessura definida (economiza resina e filamento) e <em>Bisect</em> corta o modelo em duas metades. Pela página da extensão, o Hollow como modificador exige o Blender 5.0 ou mais novo e o Bisect, o 4.5.</p></div>
+      <div class="mod-card"><h3>Exportação</h3><p>Exporta em STL, PLY ou OBJ, com a opção de unidades de exportação para garantir que a escala chegue correta ao fatiador.</p></div>
+    </div>
+    <div class="callout">
+      <strong>Limpeza manual que resolve 80% dos casos</strong>
+      <p>Antes de culpar o toolbox, faça a limpeza básica no Edit Mode: <span class="kbd">A</span> → Mesh → Clean Up → <em>Merge by Distance</em> (une vértices duplicados) e <em>Delete Loose</em> (apaga restos soltos); <span class="kbd">Shift+N</span> para recalcular as normais para fora; <span class="kbd">Ctrl+A</span> → All Transforms no modo Objeto para aplicar escala e rotação. Depois rode o diagnóstico.</p>
+    </div>
+  </section>
+
+  <section id="fatiador">
+    <div class="sec-head"><span class="sec-num">10</span><h2>Aprofundando: do fatiador à primeira camada</h2></div>
+    <p class="lead-in">A impressora não lê STL. O fatiador (slicer) transforma o modelo em G-code, a lista de movimentos que a máquina executa. Entre os mais usados estão o PrusaSlicer, o Cura, o Bambu Studio e o OrcaSlicer, todos gratuitos.</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div><h4>Importe e confira a escala</h4><p>O STL não guarda unidade: o tamanho é o número que o Blender exportou. Ao importar, confira as dimensões em milímetros no fatiador. Peça 1000 vezes maior ou menor é erro de unidade.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div><h4>Defina os parâmetros</h4><p>Altura de camada, número de perímetros, preenchimento, suportes e aba (brim) para ajudar a aderência. Comece com o perfil padrão do material (PLA é o mais fácil) e mude uma coisa por vez.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div><h4>Fatie e inspecione camada por camada</h4><p>Percorra a visualização das camadas. Procure vãos sem apoio, paredes que viraram uma linha só e suportes que prendem em lugares importantes. O fatiador também informa o tempo e a quantidade de material.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div><h4>Acompanhe a primeira camada</h4><p>A maioria das falhas começa nos primeiros minutos: a peça solta da mesa, o fio ondulado, o bico arrastando. Fique ao lado da máquina até a primeira camada estar firme.</p></div></div>
+      <div class="step"><div class="step-num">5</div><div><h4>Meça e documente</h4><p>Meça a peça pronta com um paquímetro, compare com o projeto e anote as diferenças. É esse registro que transforma uma impressão em aprendizado e melhora a próxima.</p></div></div>
+    </div>
+    <div class="callout warn">
+      <strong>Segurança no laboratório</strong>
+      <p>O bico e a mesa de impressão ficam muito quentes, e a máquina tem partes móveis. Não toque na área de impressão durante o trabalho, não deixe a impressora funcionando sem supervisão e mantenha o ambiente ventilado, principalmente com materiais diferentes do PLA.</p>
+    </div>
+    <h3 style="font-family:var(--display);margin:2rem 0 0.6rem;">Diagnóstico de falhas comuns</h3>
+    <div class="trouble-grid">
+      <div class="trouble-item"><div class="prob"><span class="tag">Problema</span><p>A peça descola da mesa durante a impressão (warping).</p></div><div class="fix"><span class="tag">Causa provável</span><p>Base pequena ou arredondada, mesa suja ou fria. Use uma aba (brim), limpe a mesa e dê à peça uma base plana maior.</p></div></div>
+      <div class="trouble-item"><div class="prob"><span class="tag">Problema</span><p>As primeiras camadas ficam "abertas" ou a peça fica mais larga embaixo.</p></div><div class="fix"><span class="tag">Causa provável</span><p>Altura do bico ou compensação da primeira camada (elephant foot). Aplique um chanfro de 0,3 a 0,5 mm na aresta da base.</p></div></div>
+      <div class="trouble-item"><div class="prob"><span class="tag">Problema</span><p>O encaixe ficou apertado demais ou não entra.</p></div><div class="fix"><span class="tag">Causa provável</span><p>Folga insuficiente. Aumente 0,1 mm por vez no furo e confira o teste de tolerância do Laboratório 4.</p></div></div>
+      <div class="trouble-item"><div class="prob"><span class="tag">Problema</span><p>Fios finos entre partes separadas (stringing).</p></div><div class="fix"><span class="tag">Causa provável</span><p>Temperatura alta ou retração baixa. É ajuste do fatiador, não do modelo; peça ajuda ao professor.</p></div></div>
+      <div class="trouble-item"><div class="prob"><span class="tag">Problema</span><p>Os círculos aparecem "quadrados" ou com facetas na peça impressa.</p></div><div class="fix"><span class="tag">Causa provável</span><p>Poucos segmentos no modelo. Aumente o número de vértices dos cilindros antes de aplicar modificadores e exportar.</p></div></div>
+    </div>
+  </section>
+
+  <section id="recursos">
+    <div class="sec-head"><span class="sec-num">11</span><h2>Para aprofundar: documentação, vídeos e cursos</h2></div>
+    <p class="lead-in">Material complementar para quem quiser ir além da aula. Prefira o que combina com o experimento que você está fazendo.</p>
+    <div class="tbl"><table class="transform-table">
+      <thead><tr><th>Tipo</th><th>Recurso</th><th>Idioma · formato</th><th>Para quê</th></tr></thead>
+      <tbody>
+        <tr><td>Documentação</td><td><a class="ext" href="https://extensions.blender.org/add-ons/print3d-toolbox/" target="_blank" rel="noopener">3D Print Toolbox · Blender Extensions</a></td><td>Inglês · página da extensão</td><td>Download, versões compatíveis e histórico de mudanças.</td></tr>
+        <tr><td>Guia de design</td><td><a class="ext" href="https://help.prusa3d.com/en/article/modeling-with-3d-printing-in-mind_164135/" target="_blank" rel="noopener">Modeling with 3D printing in mind · Prusa Knowledge Base</a></td><td>Inglês · artigo</td><td>Paredes, overhangs, tolerâncias, chanfros e divisão de peças, com valores.</td></tr>
+        <tr><td>Artigo</td><td><a class="ext" href="https://www.alura.com.br/artigos/como-exportar-um-modelo-3d-do-blender-e-utilizar-na-impressao-3d" target="_blank" rel="noopener">Exportando modelo 3D do Blender para impressão 3D · Alura</a></td><td>Português · passo a passo</td><td>Exportar STL, escala e primeiras impressões no fatiador, em português.</td></tr>
+        <tr><td>Artigo</td><td><a class="ext" href="https://all3dp.com/blender-3d-printing-tutorial/" target="_blank" rel="noopener">Blender 3D Printing Tutorial for Beginners · All3DP</a></td><td>Inglês · tutorial</td><td>Um projeto completo (unidades em mm, modificadores, exportação e divisão da peça para imprimir sem suporte).</td></tr>
+        <tr><td>Vídeo (gratuito)</td><td><a class="ext" href="https://www.youtube.com/results?search_query=Kevandram+3D+Printing+in+Blender+Beginner%27s+Guide+and+Keychain+Tutorial" target="_blank" rel="noopener">3D Printing in Blender – Beginner's Guide and Keychain Tutorial · Kevandram</a></td><td>Inglês · cerca de 24 min, YouTube</td><td>Chaveiro do zero: unidades, espessura, partes soltas, normais, modificadores e exportação STL. O link abre a busca no YouTube pelo título.</td></tr>
+        <tr><td>Curso (gratuito)</td><td><a class="ext" href="https://www.blendernation.com/2026/03/17/free-blender-5-1-beginner-course-in-brazilian-portuguese-4-hours/" target="_blank" rel="noopener">Curso de Blender 5.1 · Allan Brito</a></td><td>Português do Brasil · cerca de 4 h, YouTube</td><td>Revisão geral de modelagem, modificadores e materiais para chegar mais seguro à preparação para impressão.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout">
+      <strong>Um combinado com o laboratório</strong>
+      <p>Cada grupo imprime no máximo uma peça por vez e só depois da checagem no fatiador. Uma impressão cancelada na primeira camada custa pouco; uma falha na hora 3 custa material e a vez do colega.</p>
+    </div>
+  </section>
+
+<section id="roteiro">
+    <div class="sec-head"><span class="sec-num">12</span><h2>A série completa</h2></div>
     <div class="roadmap">
       <div class="rm-item done"><span class="rm-num">01</span><span class="rm-title">Fundamentos do Blender</span><span class="rm-tag">concluído</span></div>
       <div class="rm-item done"><span class="rm-num">02</span><span class="rm-title">Modelagem (Poly Modeling)</span><span class="rm-tag">concluído</span></div>
@@ -305,7 +462,7 @@ p{color:var(--text-dim);}
   </section>
 
   <section id="fechamento">
-    <div class="sec-head"><span class="sec-num">07</span><h2>Fechando a série: um objeto, quatro destinos</h2></div>
+    <div class="sec-head"><span class="sec-num">13</span><h2>Fechando a série: um objeto, quatro destinos</h2></div>
     <p class="lead-in">O mesmo baú, modelado uma única vez, terminou em quatro formas diferentes:</p>
     <div class="final-checklist">
       <div class="fc-row"><span class="fc-site">Jogo</span><p>Malha otimizada, com UV e PBR, exportada em FBX/glTF (Sites 2–6)</p></div>
