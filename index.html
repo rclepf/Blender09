@@ -133,7 +133,7 @@ p{color:var(--text-dim);}
     <a href="#escala">Escala e suportes</a>
     <a href="#guia">Guia: baú imprimível</a>
     <a href="#fechamento">Fechamento da série</a>
-      <a href="#fdm">Aprofundando</a>
+      <a href="#fdm">Impressora e tolerâncias</a>
     <a href="#recursos">Para aprofundar</a>
   </nav>
 </header>
@@ -297,7 +297,7 @@ p{color:var(--text-dim);}
   </section>
 
     <section id="fdm">
-    <div class="sec-head"><span class="sec-num">06</span><h2>Aprofundando: como a impressora FDM "enxerga" o seu modelo</h2></div>
+    <div class="sec-head"><span class="sec-num">06</span><h2>Como a impressora FDM "enxerga" o seu modelo</h2></div>
     <p class="lead-in">Antes de decidir a espessura de uma parede ou o tamanho de um encaixe, é preciso entender o que a máquina faz. A maioria das impressoras de laboratório usa a tecnologia FDM: um bico aquecido deposita um fio de plástico, camada sobre camada.</p>
     <div class="tbl"><table class="transform-table">
       <thead><tr><th>Conceito</th><th>O que significa</th><th>Valor típico (bico de 0,4 mm)</th></tr></thead>
@@ -320,7 +320,7 @@ p{color:var(--text-dim);}
   </section>
 
   <section id="tolerancia">
-    <div class="sec-head"><span class="sec-num">07</span><h2>Aprofundando: tolerâncias e encaixes</h2></div>
+    <div class="sec-head"><span class="sec-num">07</span><h2>Tolerâncias e encaixes</h2></div>
     <p class="lead-in">Peças que se encaixam precisam de folga. Se duas superfícies têm exatamente a mesma medida no Blender, na impressão elas vão grudar, pois o plástico real nunca é perfeito.</p>
     <p>A Prusa informa que suas impressoras têm precisão de pelo menos 0,2 mm e recomenda começar com 0,3 mm de folga em peças móveis, como dobradiças. Não existe valor universal: o resultado depende do tamanho da peça, da orientação, da calibração e do material. Por isso a prática profissional é imprimir um <strong style="color:var(--text)">teste de tolerância</strong> pequeno antes da peça final.</p>
     <div class="tbl"><table class="transform-table">
@@ -350,7 +350,7 @@ p{color:var(--text-dim);}
   </section>
 
   <section id="orientacao">
-    <div class="sec-head"><span class="sec-num">08</span><h2>Aprofundando: orientação, suportes e divisão da peça</h2></div>
+    <div class="sec-head"><span class="sec-num">08</span><h2>Orientação, suportes e divisão da peça</h2></div>
     <p class="lead-in">A mesma peça pode imprimir em 40 minutos ou em 3 horas, dependendo só de como está virada na mesa.</p>
     <div class="tbl"><table class="transform-table">
       <thead><tr><th>Problema</th><th>Regra prática</th><th>Como resolver</th></tr></thead>
@@ -378,7 +378,7 @@ p{color:var(--text-dim);}
   </section>
 
   <section id="toolbox">
-    <div class="sec-head"><span class="sec-num">09</span><h2>Aprofundando: o 3D Print Toolbox como extensão</h2></div>
+    <div class="sec-head"><span class="sec-num">09</span><h2>O 3D Print Toolbox como extensão</h2></div>
     <p class="lead-in">Atenção a uma atualização: nas versões atuais do Blender, o 3D Print Toolbox é uma <strong style="color:var(--text)">extensão</strong> oficial e gratuita, instalada pela plataforma de extensões, e não um add-on que já vem ativado.</p>
     <div class="tbl"><table class="transform-table">
       <thead><tr><th>Passo</th><th>Onde</th></tr></thead>
@@ -403,7 +403,7 @@ p{color:var(--text-dim);}
   </section>
 
   <section id="fatiador">
-    <div class="sec-head"><span class="sec-num">10</span><h2>Aprofundando: do fatiador à primeira camada</h2></div>
+    <div class="sec-head"><span class="sec-num">10</span><h2>Do fatiador à primeira camada</h2></div>
     <p class="lead-in">A impressora não lê STL. O fatiador (slicer) transforma o modelo em G-code, a lista de movimentos que a máquina executa. Entre os mais usados estão o PrusaSlicer, o Cura, o Bambu Studio e o OrcaSlicer, todos gratuitos.</p>
     <div class="steps">
       <div class="step"><div class="step-num">1</div><div><h4>Importe e confira a escala</h4><p>O STL não guarda unidade: o tamanho é o número que o Blender exportou. Ao importar, confira as dimensões em milímetros no fatiador. Peça 1000 vezes maior ou menor é erro de unidade.</p></div></div>
